@@ -1,0 +1,52 @@
+{%extends 'base-2.html'%}
+{%block head%}
+    <title>Glossary</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/glossary.css') }}">
+{%endblock%}
+{% block content %}
+<section>
+    <h1>Glossary</h1>
+    <p>Here to help you understand some of the terminologies used in the app.</p>
+</section>
+<section id="defs">
+    <h3>Some of the keywords used:</h3>
+    <div>
+        <dl>
+            <dd>Rate</dd>
+            <dt>How do you rate your experience, e.g: loved, liked, hated, or even neutral</dt>
+        </dl>
+        <dl>
+            <dd>Added</dd>
+            <dt>When was the movie added to your list?</dt>
+        </dl>
+        <dl>
+            <dd>Genre</dd>
+            <dt>What kind of movie is it? You don't have to add just one.</dt>
+        </dl>
+        <dl>
+            <dd>Progress</dd>
+            <dt>What step are you on in your experience?</dt>
+        </dl>
+        <dl>
+            <dd>Repeat</dd>
+            <dt>Would you repeat it?</dt>
+        </dl>
+        <dl>
+            <dd>Start</dd>
+            <dt>When did you start watching it</dt>
+        </dl>
+        <dl>
+            <dd>Finish</dd>
+            <dt>When did you finish it</dt>
+        </dl>
+        <dl>
+            <dd>Notes</dd>
+            <dt>Now is the time to add your personal touch to the entry. What do you have to say about your experience?</dt>
+        </dl>
+        <dl>
+            <dd>Log</dd>
+            <dt>This refers to a single entry you have made to the tracker. More entries means more logs.</dt>
+        </dl>
+    </div>
+</section>
+{%endblock%}

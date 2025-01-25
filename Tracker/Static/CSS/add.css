@@ -1,0 +1,84 @@
+section {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    font-size: 2rem;
+    color: #333;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+p {
+    text-align: center;
+    color: #666;
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+}
+
+.form {
+    padding: 10px;
+}
+
+legend {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #444;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.input-field {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.input-field:focus {
+    outline: none;
+    border-color: #007bff;
+    background-color: #fff;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.submit-btn:hover {
+    background-color: #0056b3;
+}
+
+.submit-btn:focus {
+    outline: none;
+}
+
+.input-field:required {
+    border: 2px solid rgba(255, 0, 0, 0.588);
+}
+
+.input-field:focus:required {
+    background-color: #ffcccc;
+}
+
+input:invalid {
+    border: 2px solid red;
+}

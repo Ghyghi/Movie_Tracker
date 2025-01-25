@@ -1,0 +1,104 @@
+h3, h5 {
+    color: #4e73df;
+    text-align: center;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Section Styling */
+section {
+    padding: 20px;
+    margin: 10px;
+    border-radius: 12px;
+    background-color: #fff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Welcome section */
+#welcome {
+    background-color: #f0f5ff;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    font-family: 'Cursive', sans-serif;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+#welcome h2 {
+    font-size: 2.2rem;
+    color: #4e73df;
+    animation: bounce 1s infinite alternate;
+}
+
+/* Table Styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+table th, table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 2px dashed #4e73df;
+    font-size: 1.1rem;
+}
+
+table th {
+    background-color: #f1f1f1;
+    font-weight: bold;
+}
+
+table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+    transform: scale(1.02);
+    transition: transform 0.2s ease-in-out;
+}
+
+table tbody tr:nth-child(even):hover {
+    transform: scale(1.05);
+}
+
+table td {
+    color: #4e73df;
+    font-size: 1rem;
+}
+
+/* Hint section */
+#hint {
+    text-align: center;
+    font-size: 1rem;
+    background-color: #f7f8fc;
+    padding: 12px;
+    border-radius: 10px;
+    font-family: 'Cursive', sans-serif;
+    border: 1px solid #4e73df;
+}
+
+#hint details summary {
+    cursor: pointer;
+    color: #4e73df;
+    font-weight: bold;
+    font-size: 1.1rem;
+    transition: color 0.2s ease-in-out;
+}
+
+#hint details summary:hover {
+    color: #2e59d9;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+    .cards {
+        flex-direction: column;
+    }
+
+    .card {
+        flex: 0 0 100%;
+    }
+
+    table td, table th {
+        font-size: 1rem;
+    }
+}

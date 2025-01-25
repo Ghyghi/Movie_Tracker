@@ -1,0 +1,31 @@
+{%extends 'base.html'%}
+{%block head%}
+<title>Login</title>
+<link rel="stylesheet" href="{{url_for('static', filename='CSS/register.css')}}">
+{%endblock%}
+{%block content%}
+<section>
+    <h1>Movie Tracker</h1>
+    <p>Track the movies you've watched, plan your next movie night, and discover new favorites!</p>
+    <div class="form">
+        <form action="/login" method="POST" novalidate>
+            {{ form.hidden_tag() }}
+            <fieldset>
+            <legend>Login</legend>
+            <div class="form-group">
+                {{ form.username.label }}
+                {{ form.username(class="input-field") }}
+            </div>
+            <div class="form-group">
+                {{ form.password.label }}
+                {{ form.password(class="input-field") }}
+            </div>
+            <div class="form-group">
+                {{ form.submit(class="submit-btn") }}
+            </div>
+            </fieldset>
+            
+        </form>
+    </div  >
+</section>
+{%endblock%}

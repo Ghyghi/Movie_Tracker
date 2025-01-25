@@ -1,0 +1,56 @@
+{%extends 'base-2.html'%}
+{%block head%}
+<title>Update Movie</title>
+<link rel="stylesheet" href="{{url_for('static', filename='CSS/add.css')}}">
+{%endblock%}
+{%block content%}
+<section>
+    <div class="form">
+        <form action="{{ url_for('update', id=movie.id) }}" method="POST" novalidate>
+            {{form.hidden_tag()}}
+            <fieldset>
+                <legend>Update movie in tracker</legend>
+                <div class="form-group">
+                    {{form.name.label}}
+                    {{form.name(class="input-field")}}
+                </div>
+                <div class="form-group">
+                    {{ form.rate.label }}
+                    {{ form.rate(class="input-field") }}
+                </div>
+                <div class="form-group">
+                    {{ form.added.label }}
+                    {{ form.added(class="input-field") }}
+                </div>
+                <div class="form-group">
+                    {{ form.genre.label }}
+                    {{ form.genre(class="input-field", multiple=True) }}
+                </div>
+                <div class="form-group">
+                    {{ form.progress.label }}
+                    {{ form.progress(class="input-field") }}
+                </div>
+                <div class="form-group">
+                    {{ form.repeat.label }}
+                    {{ form.repeat(class="input-field") }}
+                </div>
+                <div class="form-group">
+                    {{ form.start.label }}
+                    {{ form.start(class="input-field") }}
+                </div>
+                <div class="form-group">
+                    {{ form.finish.label }}
+                    {{ form.finish(class="input-field") }}
+                </div>
+                <div class="form-group">
+                    {{ form.notes.label }}
+                    {{ form.notes(class="input-field") }}
+                </div>
+                <div class="form-group">
+                    {{ form.submit(class="submit-btn") }}
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</section>
+{%endblock%}

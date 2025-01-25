@@ -1,0 +1,56 @@
+{%extends 'base.html'%}
+{%block head%}
+    <title>Home</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='CSS/index.css')}}">
+{%endblock%}
+{%block content%}
+<section>
+    <div class="container">
+        <h2>Welcome to Movie Tracker</h2>
+        <p>Track the movies you've watched, plan your next movie night, and discover new favorites!</p>
+    </div>
+</section>
+<section>
+    <div class="container">
+        <h2>Key Features</h2>
+        <div class="feature-cards">
+            <div class="card">
+                <h3>Movies Watched</h3>
+                <p>Keep a record of movies you’ve watched and rate them.</p>
+            </div>
+            <div class="card">
+                <h3>Watchlist</h3>
+                <p>Organize movies you want to watch and categorize them.</p>
+            </div>
+            <div class="card">
+                <h3>Simple Stats</h3>
+                <p>Track your movie stats, from total films watched to favorite genres.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section>
+    <div class="container">
+        <h2>How It Works</h2>
+        <ul>
+            <li>Add movies to your watchlist or mark them as watched.</li>
+            <li>Use tags and categories to organize your collection.</li>
+            <li>Your personalized entertainment database starts now!</li>
+        </ul>
+    </div>
+</section>
+
+<section>
+    <div class="container">
+        <h2>Why Use Movie Tracker?</h2>
+        <ul>
+            <li>Stay organized with your movie collection.</li>
+            <li>Never forget a movie recommendation.</li>
+            <li>Make your movie-watching experience more enjoyable with ratings and reviews.</li>
+        </ul>
+    </div>
+</section>
+
+{%endblock%}

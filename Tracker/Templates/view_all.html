@@ -1,0 +1,39 @@
+{%extends 'base-2.html'%}
+{%block head%}
+    <title>View All Movies</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/view_all.css') }}">
+{%endblock%}
+{%block content%}
+<section>
+    <h3>View All Movies Logged</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Progress</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if movies|length == 0 %}
+            <tr>
+                <td colspan="4" style="text-align: center;">
+                    <p>You have not yet logged anything. Start logging to see them here.</p>
+                </td>
+            </tr>
+            {% else %}
+                {% for movie in movies %}
+                <tr>
+                    <td>{{ movie.id }}</td>
+                    <td>{{ movie.name }}</td>
+                    <td>{{ movie.progress }}</td>
+                    <td><a href="{{ url_for('view_movie', id=movie.id) }}" class="action-btn">View Details</a></td>
+                </tr>
+                {% endfor %}
+            {% endif %}
+        </tbody>
+    </table>
+    
+</section>
+{%endblock%}

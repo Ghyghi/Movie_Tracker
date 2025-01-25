@@ -1,0 +1,115 @@
+/* Reset some default styles */
+body, h1, h3, p {
+    margin: 0;
+    padding: 0;
+    
+}
+h1, h3{
+    color: #4e73df;
+}
+/* Section styling */
+section {
+    background-color: white;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    max-width: 900px;
+    display: flex;
+    flex-direction: column;
+    justify-self: center;}
+/* Glossary title */
+h1 {
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 10px;
+    text-align: center;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+/* Glossary description */
+p {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    color: #666;
+    text-align: center;
+}
+/* Subheading style */
+h3 {
+    font-size: 1.5rem;
+    color: #444;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+/* Style for definition lists */
+dl {
+    margin-bottom: 25px;
+    background-color: #fafafa;
+    padding: 20px;
+    border-radius: 12px;
+    border: 2px dashed #d3d3d3;
+    text-align: center;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.05);
+}
+
+dd {
+    font-weight: bold;
+    font-size: 1.3rem;
+    color: #4e73df;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: transform 0.3s ease, color 0.3s ease;
+
+}
+
+dt {
+    font-size: 1.1rem;
+    color: #555;
+    font-style: italic;
+    margin-top: 5px;
+    border: 2px dashed #d3d3d3;
+}
+
+dd:hover {
+    transform: translateY(-5px);
+    color: #4e72df80;
+}
+
+/* Decorative flourishes (whimsical) */
+dl::before {
+    content: '✨';
+    font-size: 2rem;
+    margin-right: 10px;
+}
+
+dl::after {
+    content: '✨';
+    font-size: 2rem;
+    margin-left: 10px;
+}
+
+/* Responsive design: Ensure it adapts to smaller screens */
+@media (max-width: 768px) {
+    section {
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    h3 {
+        font-size: 1.3rem;
+    }
+
+    dt {
+        font-size: 1.1rem;
+    }
+
+    dd {
+        font-size: 1rem;
+    }
+}

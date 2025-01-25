@@ -1,0 +1,127 @@
+{%extends 'base-2.html'%}
+{%block head%}
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/dashboard.css') }}">
+{%endblock%}
+{%block content%}
+<section id="welcome">
+    <div>
+        <p>What a beautiful day to track, wouldn't you agree <strong>{{user}}</strong>?!</p>
+    </div>
+</section>
+<section id="stats">
+    <h3>Quick Stats</h3>
+    <div id="logs" class="cards">
+        <div class="row">
+            <div class="col-lg-6 col-md-6 mb-4">
+                <div class="card border-left-primary shadow h-100 py-3">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-2">Total Logs</div>
+                                <div class="h3 mb-0 font-weight-bold text-gray-800">{{ movies }}</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-clipboard-list fa-3x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="genres" class="cards">
+        <div class="row">
+            <div class="col-lg-6 col-md-6 mb-4">
+                <div class="card border-left-primary shadow h-100 py-3">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-2">top genre</div>
+                                <div class="h3 mb-0 font-weight-bold text-gray-800">
+                                    {%if genre_name%}
+                                        {{ genre_name }}
+                                    {%else%}
+                                        <p>You have yet to log</p>
+                                    {%endif%}
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-clapperboard fa-3x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="activity">
+    <h3>Weekly Recap</h3>
+    <div>
+        <h5>Recently Added</h5>
+        <table class="table-one">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Genre</th>
+                    <th>Progress</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if recent_add %}
+                    {% for add in recent_add %}
+                        <tr>
+                            <td>{{ add.name }}</td>
+                            <td>{{ add.genre }}</td>
+                            <td>{{ add.progress }}</td>
+                            <td></td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="4" style="text-align: center;">You are yet to log</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <h5>Recently Completed</h5>
+        <table class="table-two">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Genre</th>
+                    <th>Progress</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {%if watch%}
+                    {% for one in watch %}
+                        <tr>
+                            <td>{{one.name}}</td>
+                            <td>{{one.genre}}</td>
+                            <td>{{one.progress}}</td>
+                            <td></td>
+                        </tr>
+                    {%endfor%}
+                {% else %}
+                    <tr>
+                        <td colspan="4" style="text-align: center;">You are yet to log a completed movie</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</section>
+<section id="hint">
+    <details>
+        <summary>Hint</summary>
+        <p>If you find that you can't understand some keywords, visit the glossary page for help.</p>
+    </details>
+</section>
+{%endblock%}
