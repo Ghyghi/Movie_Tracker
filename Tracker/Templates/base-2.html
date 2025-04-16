@@ -53,6 +53,21 @@
                 }, 5000); // 5000ms = 5 seconds
             });
         </script>
+        <script>
+            const dropdownToggle = document.querySelector('.dropdown-toggle');
+            const dropdownContainer = document.querySelector('.dropdown-container');
+        
+            dropdownToggle.addEventListener('click', () => {
+                dropdownContainer.classList.toggle('open');
+            });
+        
+            document.addEventListener('click', (e) => {
+                if (!dropdownContainer.contains(e.target)) {
+                    dropdownContainer.classList.remove('open');
+                }
+            });
+        </script>
+        
     </main>
     <footer>
         <div class="container">

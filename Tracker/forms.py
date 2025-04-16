@@ -16,6 +16,8 @@ rates = [
 kind = [
     # ('', 'Select genres'),
     ('Action', 'Action'),
+    ('Biography', 'Biography'),
+    ('History', 'History'),
     ('Adventure', 'Adventure'),
     ('Comedy', 'Comedy'),
     ('Drama', 'Drama'),
@@ -62,6 +64,8 @@ class AddMovieForm(FlaskForm):
     name = StringField("What is the movie called?", validators=[InputRequired()])
     rate = SelectField("What do you rate it?", choices=rates, validators=[InputRequired()])
     added = DateField("When was it added?", validators=[InputRequired()])
+    plot = TextAreaField("What is it about?", validators=[Optional()])
+    release = DateField("When was it released?", validators=[Optional()])
     genre = SelectMultipleField("What kind is it?", choices=kind, validators=[InputRequired()])
     progress = SelectField("What is your current progress?", choices=where, validators=[InputRequired()])
     repeat = SelectField("Would you repeat it?", choices=repeats)
@@ -69,3 +73,7 @@ class AddMovieForm(FlaskForm):
     finish = DateField("When did you finish it?", validators=[Optional()])
     notes = TextAreaField("What would you say about it?", validators=[Optional()])
     submit = SubmitField("Add")
+
+class SearchForm(FlaskForm):
+    search = StringField("Search", validators=[InputRequired()])
+    submit = SubmitField("Search")

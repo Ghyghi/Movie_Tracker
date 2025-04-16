@@ -12,11 +12,13 @@
         <p><strong>Rate:</strong> {{ movie.rate }}</p>
         <p><strong>Added:</strong> {% if movie.added %}{{ movie.added.strftime('%d-%m-%Y') }}{% else %}N/A{% endif %}</p>
         <p><strong>Genre:</strong> {{ movie.genre }}</p>
+        <p><strong>Plot:</strong> {{ movie.plot }}</p>
+        <p><strong>Release:</strong> {% if movie.release %}{{ movie.release.strftime('%d-%m-%Y') }}{% else %}Not Added{% endif %}</p>
         <p><strong>Progress:</strong> {{ movie.progress }}</p>
-        <p><strong>Repeat:</strong> {{ movie.repeat }}</p>
-        <p><strong>Start:</strong> {% if movie.start %}{{ movie.start.strftime('%d-%m-%Y') }}{% else %}N/A{% endif %}</p>
-        <p><strong>Finish:</strong> {% if movie.finish %}{{ movie.finish.strftime('%d-%m-%Y') }}{% else %}N/A{% endif %}</p>
-        <p><strong>Notes:</strong> {{ movie.notes }}</p>
+        <p><strong>Repeat:</strong> {% if movie.repeat %}{{ movie.repeat }}{% else %}Not Added{% endif %}</p>
+        <p><strong>Start:</strong> {% if movie.start %}{{ movie.start.strftime('%d-%m-%Y') }}{% else %}Not Added{% endif %}</p>
+        <p><strong>Finish:</strong> {% if movie.finish %}{{ movie.finish.strftime('%d-%m-%Y') }}{% else %}Not Added{% endif %}</p>
+        <p><strong>Notes:</strong> {% if movie.notes %}{{ movie.notes }}{% else %}Not Added{% endif %}</p>
     </div>
     <div class="movie-actions">
         <h3>Actions</h3>

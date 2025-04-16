@@ -1,0 +1,31 @@
+{%extends "base-2.html"%}
+{%block head%}
+    <title>Search</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/search.css') }}">
+{%endblock%}
+{%block content%}
+    <h3>Search from IMDB</h3>
+    <section id="search">
+        <form method="POST" action="/search" novalidate>
+            {{form.hidden_tag()}}
+                {{form.search(class="input-field", placeholder="Search for a movie...")}}
+                {{form.submit(class="submit-btn")}}
+        </form>
+    </section>
+
+    {% if results %}
+        <section id="results">
+            <h3>Search Results</h3>
+            <ul>
+                {% for movie in results %}
+                    <li> <a href="{{ url_for('movie_info', imdb_id=movie.imdbID) }}">{{ movie.Title }} ({{ movie.Year }}) </a></li>
+                {% endfor %}
+            </ul>
+        </section>
+    {% else %}
+        <section id="results">
+            <h3>Search Results</h3>
+            <p>No movies found</p>
+        </section>
+    {% endif %}
+{%endblock%}

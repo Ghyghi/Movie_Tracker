@@ -1,10 +1,12 @@
 from flask import *
+import requests
 from Tracker.forms import *
 from Tracker.models import *
 from flask_login import login_required, current_user, login_user, logout_user
 from Tracker import *
 from sqlalchemy import func
 from datetime import datetime, timedelta
+from collections import Counter
 
 
 def flash_message(message, category):
@@ -71,35 +73,83 @@ def register_routes(app):
     @login_required
     def dashboard():
         one_week_ago = datetime.now() - timedelta(weeks=1)
-        movies = Movie.query.filter_by(username=current_user.username).count()
         user = current_user.username
-        viewed =(
-            db.session.query(Movie.genre)
-            .filter(Movie.username == current_user.username)
-            .group_by(Movie.genre)
-            .order_by(func.count(Movie.genre).desc())  # Sort by count in descending order
-            .first()  # Get the first result
+
+        movies = Movie.query.filter_by(username=user).count()
+        all_movies = Movie.query.filter_by(username=user).all()
+
+        # Flatten and count genres (since they're comma-separated strings)
+        all_genres = []
+        for movie in all_movies:
+            if movie.genre:
+                genres = [g.strip() for g in movie.genre.split(',')]
+                all_genres.extend(genres)
+
+        genre_counts = Counter(all_genres)
+        genre_name = genre_counts.most_common(1)[0][0] if genre_counts else None
+
+        recent_add = (
+            Movie.query.filter_by(username=user)
+            .filter(Movie.added >= one_week_ago)
+            .limit(3)
+            .all()
         )
-        genre_name = viewed[0] if viewed else None
-        recent_add = Movie.query.filter_by(username=user).filter(Movie.added >= one_week_ago).limit(3).all()
-        watch = Movie.query.filter_by(username=user).filter(Movie.progress == 'Completed', Movie.finish >= one_week_ago).limit(3).all()
-        return render_template('dashboard.html', movies=movies, genre_name=genre_name, user=user, recent_add=recent_add, watch=watch)
+
+        watch = (
+            Movie.query.filter_by(username=user)
+            .filter(Movie.progress == 'Completed', Movie.finish >= one_week_ago)
+            .limit(3)
+            .all()
+        )
+
+        return render_template(
+            'dashboard.html',
+            movies=movies,
+            genre_name=genre_name,
+            user=user,
+            recent_add=recent_add,
+            watch=watch
+        )
     
     #Glossary Route
-    @app.route('/glossary', methods=['GET'])
-    @login_required
+    @app.route('/glossary', methods=['GET', 'POST'])
     def glossary():
-        return render_template('glossary.html')
-    
+        form = SearchForm()
+        results = None
+        search_performed = False
+        all_terms = Glossary.query.all()
+        
+        if form.validate_on_submit():
+            search_performed = True
+            search_term = form.search.data.lower()
+            if search_term:
+                # Search in both term and definition
+                results = Glossary.query.filter(
+                    db.or_(
+                        db.func.lower(Glossary.term).contains(search_term),
+                        db.func.lower(Glossary.definition).contains(search_term)
+                    )
+                ).all()
+        
+        return render_template('glossary.html', 
+                            form=form, 
+                            results=results, 
+                            all_terms=all_terms, 
+                            search_performed=search_performed)
+
+
     #Add Movie Route
     @app.route('/add_movie', methods=['GET', 'POST'])
     @login_required
     def addMovie():
         form = AddMovieForm()
+        form.genre.data = form.genre.data or []
         if form.validate_on_submit():
             name=form.name.data
             rate=form.rate.data
             added=form.added.data
+            plot=form.plot.data
+            release=form.release.data
             genre=",".join(form.genre.data)
             progress=form.progress.data
             repeat=form.repeat.data
@@ -107,7 +157,7 @@ def register_routes(app):
             finish=form.finish.data
             notes=form.notes.data
 
-            new_movie=Movie(name=name, username=current_user.username, rate=rate, added=added, genre=genre, progress=progress, repeat=repeat, start=start, finish=finish, notes=notes)
+            new_movie=Movie(name=name, username=current_user.username, rate=rate, added=added, genre=genre, progress=progress, repeat=repeat, start=start, finish=finish, notes=notes, plot=plot, release=release)
 
             db.session.add(new_movie)
             db.session.commit()
@@ -116,11 +166,16 @@ def register_routes(app):
         return render_template('add.html', form=form)
     
     #View All Logs
-    @app.route('/view_all', methods=['GET'])
+    @app.route('/view_all', methods=['GET', 'POST'])
     @login_required
     def viewMovies():
+        form = SearchForm()
         movies = Movie.query.filter_by(username=current_user.username).all()
-        return render_template('view_all.html', movies=movies)
+        if form.validate_on_submit():
+            search_term = form.search.data
+            results = Movie.query.filter_by(username=current_user.username).filter(Movie.name.ilike(f"%{search_term}%")).all()
+            return render_template('view_all.html', form=form, results=results, movies=movies)
+        return render_template('view_all.html', form=form, movies=movies)
     
     #View A Single Movie
     @app.route('/view_movie/<int:id>', methods=['GET'])
@@ -145,6 +200,7 @@ def register_routes(app):
     def update(id):
         movie = Movie.query.filter_by(id=id).first_or_404()
         form = AddMovieForm(obj=movie)
+        form.genre.data = [g.strip() for g in movie.genre.split(',')] if movie.genre else []
         if form.validate_on_submit():
             movie.name=form.name.data
             movie.rate=form.rate.data
@@ -162,3 +218,95 @@ def register_routes(app):
             return redirect(url_for('viewMovies'))
         
         return render_template('update.html', form=form, movie=movie)
+    
+    #Search Route
+    @app.route('/search', methods=['GET', 'POST'])
+    @login_required
+    def search():
+        form = SearchForm()
+        if form.validate_on_submit():
+            search_term = form.search.data
+            results = get_movie(search_term)
+            return render_template('search.html', form=form, results=results)
+        return render_template('search.html', form=form)
+
+    def get_movie(search_term):
+        if not search_term:
+            return None
+
+        url = "http://www.omdbapi.com/"
+        params = {
+            'apikey': OMDB_API_KEY,
+            's': search_term
+        }
+        response = requests.get(url, params=params)
+        
+        if response.status_code == 200:
+            data = response.json()
+            if data.get('Response') == "True":
+                return data.get('Search', [])
+            return []
+        else:
+            return []
+    
+    #Movie Info Route
+    @app.route('/movie_info/<string:imdb_id>', methods=['GET'])
+    @login_required
+    def movie_info(imdb_id):
+        url = "http://www.omdbapi.com/"
+        params = {
+            'apikey': OMDB_API_KEY,
+            'i': imdb_id
+        }
+        response = requests.get(url, params=params)
+        
+        if response.status_code == 200:
+            data = response.json()
+            if data.get('Response') == "True":
+                return render_template('movie_info.html', movie=data)
+            else:
+                flash_message('Movie not found.', 'danger')
+                return redirect(url_for('search'))
+        else:
+            flash_message('Error fetching movie details.', 'danger')
+            return redirect(url_for('search'))
+        
+    #Add from IMDB
+    @app.route('/add_from_imdb/<string:imdb_id>', methods=['GET'])
+    @login_required
+    def add_from_imdb(imdb_id):
+        url = "http://www.omdbapi.com/"
+        params = {
+            'apikey': OMDB_API_KEY,
+            'i': imdb_id
+        }
+        response = requests.get(url, params=params)
+        
+        if response.status_code == 200:
+            data = response.json()
+            if data.get('Response') == "True":
+                genres_raw = data.get('Genre', '')
+                genre_list = [g.strip() for g in genres_raw.split(',')] if genres_raw else []
+                movie_data = {
+                    'name': data.get('Title'),
+                    'rate': 'Neutral',
+                    'added': datetime.now(),
+                    'genre': genre_list,
+                    'plot': data.get('Plot'),
+                    'release': datetime.strptime(data.get('Released'), "%d %b %Y").date() if data.get('Released') else None,
+                    'progress': 'Not Started',
+                    'repeat': False,
+                    'start': None,
+                    'finish': None,
+                    'notes': ''
+                }
+                print(movie_data)
+                form = AddMovieForm(data=movie_data)
+                return render_template('add.html', form=form)
+            else:
+                flash_message('Movie not found.', 'danger')
+                return redirect(url_for('search'))
+        else:
+            flash_message('Error fetching movie details.', 'danger')
+            return redirect(url_for('search'))
+        

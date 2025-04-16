@@ -1,3 +1,11 @@
+/* General styling */
+#info {    
+    margin: 0;
+    padding: 20px;
+    
+}
+
+
 /* Table styling */
 table {
     width: 100%;
@@ -23,9 +31,4 @@ table tbody tr:nth-child(even) {
 
 table td {
     color: #4e73df;
-}
-
-h3 {
-    text-align: center;
-    margin:20px;
 }

@@ -1,0 +1,30 @@
+{%extends "base-2.html"%}
+{%block head%}
+    <title>Movie Info | {{ movie.Title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/movie_info.css') }}">
+{%endblock%}
+{%block content%}
+    {% if movie %}
+        <section id="results">
+            <h3>{{ movie.Title }}</h3>
+            <div class="movie-info">
+                <img src="{{ movie.Poster }}" alt="Movie Poster" class="poster">
+                <div class="details">
+                    <p><strong>Date Realesed:</strong> {{ movie.Released }}</p>
+                    <p><strong>Genre:</strong> {{ movie.Genre }}</p>
+                    <p><strong>Director:</strong> {{ movie.Director }}</p>
+                    <p><strong>Actors:</strong> {{ movie.Actors }}</p>
+                    <p><strong>Plot:</strong> {{ movie.Plot }}</p>
+                    <p><strong>IMDB Rating:</strong> {{ movie.imdbRating }}</p>
+                    <p><strong>Runtime:</strong> {{ movie.Runtime }}</p>
+                </div>
+                <div class="action">
+                    <a href="{{ url_for('add_from_imdb', imdb_id=movie.imdbID) }}" class="btn">Add to Watchlist</a>
+                </div>
+        </section>
+    {% else %}
+        <section id="results">
+            <h3>No movies found</h3>
+        </section>
+    {% endif %}
+{%endblock%}

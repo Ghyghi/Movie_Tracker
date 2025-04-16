@@ -2,38 +2,77 @@
 {%block head%}
     <title>View All Movies</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='CSS/view_all.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/search.css') }}">
 {%endblock%}
 {%block content%}
-<section>
     <h3>View All Movies Logged</h3>
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Progress</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% if movies|length == 0 %}
-            <tr>
-                <td colspan="4" style="text-align: center;">
-                    <p>You have not yet logged anything. Start logging to see them here.</p>
-                </td>
-            </tr>
-            {% else %}
-                {% for movie in movies %}
-                <tr>
-                    <td>{{ movie.id }}</td>
-                    <td>{{ movie.name }}</td>
-                    <td>{{ movie.progress }}</td>
-                    <td><a href="{{ url_for('view_movie', id=movie.id) }}" class="action-btn">View Details</a></td>
-                </tr>
-                {% endfor %}
-            {% endif %}
-        </tbody>
-    </table>
-    
-</section>
+    <section id="search">
+        <form method="POST" action="/view_all" novalidate>
+            {{form.hidden_tag()}}
+                {{form.search(class="input-field", placeholder="Search my movie catalog...")}}
+                {{form.submit(class="submit-btn")}}
+        </form>
+    </section>
+    <section id="info">
+        {% if results %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Filter</th>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Progress</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if results|length == 0 %}
+                    <tr>
+                        <td colspan="4" style="text-align: center;">
+                            <p>No movie by this title was logged.</p>
+                        </td>
+                    </tr>
+                    {% else %}
+                        {% for movie in results %}
+                        <tr>
+                            <td>{{ movie.id }}</td>
+                            <td>{{ movie.name }}</td>
+                            <td>{{ movie.progress }}</td>
+                            <td><a href="{{ url_for('view_movie', id=movie.id) }}" class="action-btn">View Details</a></td>
+                        </tr>
+                        {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
+        {%else%}
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Progress</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if movies|length == 0 %}
+                    <tr>
+                        <td colspan="4" style="text-align: center;">
+                            <p>You have not yet logged anything. Start logging to see them here.</p>
+                        </td>
+                    </tr>
+                    {% else %}
+                        {% for movie in movies %}
+                        <tr>
+                            <td>{{ movie.id }}</td>
+                            <td>{{ movie.name }}</td>
+                            <td>{{ movie.progress }}</td>
+                            <td><a href="{{ url_for('view_movie', id=movie.id) }}" class="action-btn">View Details</a></td>
+                        </tr>
+                        {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
+        {%endif%}
+    </section>
 {%endblock%}

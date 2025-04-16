@@ -38,14 +38,68 @@ nav ul li a {
     color: #f0a500;
     cursor: pointer;
 }
-#nav ul {
-    display: flex;
-    gap: 20px;
+
+nav ul {
     list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 1em;
+    align-items: center;
 }
-#nav ul li{
+
+nav ul li {
+    position: relative;
     color: #fff;
 }
+
+nav ul li a,
+.dropdown-toggle {
+    text-decoration: none;
+    color: white;
+    background: none;
+    border: none;
+    font: inherit;
+    cursor: pointer;
+    padding: 0.5em 1em;
+}
+
+.dropdown-container {
+    position: relative;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background-color: #444;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    border-radius: 4px;
+    min-width: 150px;
+    z-index: 999;
+}
+
+.dropdown-content li {
+    margin: 0;
+}
+
+.dropdown-content li a {
+    display: block;
+    padding: 0.5em 1em;
+    color: white;
+    text-decoration: none;
+}
+
+.dropdown-content li a:hover {
+    background-color: #555;
+}
+
+.dropdown-container.open .dropdown-content {
+    display: block;
+}
+
+
 footer{
     text-align: center;
 }

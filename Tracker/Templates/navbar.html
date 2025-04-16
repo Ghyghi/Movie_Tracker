@@ -1,9 +1,17 @@
 <nav>
     <ul>
         <li><a href="/dashboard">Home</a></li>
-        <li><a href="/glossary">Glossary</a></li>
-        <li><a href="/add_movie">Add</a></li>
         <li><a href="/view_all">View</a></li>
-        <li><a href="/logout">Logout</a></li>
+
+        <!-- Dropdown Menu Trigger -->
+        <li class="dropdown-container">
+            <button class="dropdown-toggle">More &#9662;</button>
+            <ul class="dropdown-content">
+                <li><a href="/search">Search</a></li>
+                <li><a href="/glossary">Glossary</a></li>
+                <li><a href="/add_movie">Add</a></li>
+                <li><a href="/logout">Logout</a></li>
+            </ul>
+        </li>
     </ul>
 </nav>

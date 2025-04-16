@@ -2,51 +2,48 @@
 {%block head%}
     <title>Glossary</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='CSS/glossary.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/search.css') }}">
 {%endblock%}
 {% block content %}
 <section>
     <h1>Glossary</h1>
     <p>Here to help you understand some of the terminologies used in the app.</p>
+    <section id="search">
+        <form method="POST" action="/glossary" novalidate>
+            {{form.hidden_tag()}}
+                {{form.search(class="input-field", placeholder="Search by term or definition...")}}
+                {{form.submit(class="submit-btn")}}
+        </form>
+    </section>
 </section>
-<section id="defs">
-    <h3>Some of the keywords used:</h3>
-    <div>
-        <dl>
-            <dd>Rate</dd>
-            <dt>How do you rate your experience, e.g: loved, liked, hated, or even neutral</dt>
-        </dl>
-        <dl>
-            <dd>Added</dd>
-            <dt>When was the movie added to your list?</dt>
-        </dl>
-        <dl>
-            <dd>Genre</dd>
-            <dt>What kind of movie is it? You don't have to add just one.</dt>
-        </dl>
-        <dl>
-            <dd>Progress</dd>
-            <dt>What step are you on in your experience?</dt>
-        </dl>
-        <dl>
-            <dd>Repeat</dd>
-            <dt>Would you repeat it?</dt>
-        </dl>
-        <dl>
-            <dd>Start</dd>
-            <dt>When did you start watching it</dt>
-        </dl>
-        <dl>
-            <dd>Finish</dd>
-            <dt>When did you finish it</dt>
-        </dl>
-        <dl>
-            <dd>Notes</dd>
-            <dt>Now is the time to add your personal touch to the entry. What do you have to say about your experience?</dt>
-        </dl>
-        <dl>
-            <dd>Log</dd>
-            <dt>This refers to a single entry you have made to the tracker. More entries means more logs.</dt>
-        </dl>
-    </div>
+<section>
+    {%if results%}
+        <div id="defs">
+        {% for result in results %}
+            <div class="card">
+                <dl>
+                    <dt>{{ result.term }}</dt>
+                    <dd>{{ result.definition }}</dd>
+                </dl>
+            </div>
+        {% endfor %}
+        </div>
+    {%elif search_performed%}
+        <div class="no-results">
+            <p>No terms found matching your search.</p>
+        </div>
+    {%else%}
+        <h3>Some of the keywords used:</h3>
+        <div id="defs">
+        {% for term in all_terms %}
+            <div class="card">
+                <dl>
+                    <dt>{{ term.term }}</dt>
+                    <dd>{{ term.definition }}</dd>
+                </dl>
+            </div>
+        {% endfor %}
+        </div>
+    {% endif %}
 </section>
 {%endblock%}

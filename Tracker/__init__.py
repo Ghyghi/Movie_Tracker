@@ -10,6 +10,7 @@ import os
 # Load environment variables from .env file
 load_dotenv()
 secret_key = os.getenv('SECRET_KEY')
+OMDB_API_KEY = os.getenv('OMDB_API_KEY')
 
 # Initialize Flask extensions
 db = SQLAlchemy()
