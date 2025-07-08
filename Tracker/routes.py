@@ -19,13 +19,14 @@ def register_routes(app):
     @app.route('/home')
     def home():
         return render_template('index.html')
-    
+
     #Register Route
     @app.route('/register', methods=['GET', 'POST'])
     def register():
         form=RegisterForm()
         if form.validate_on_submit():
             names = form.names.data
+            email = form.email.data
             username = form.username.data
             password = form.password.data
 
@@ -34,13 +35,13 @@ def register_routes(app):
                 flash_message('Username already exists. Please choose a different one.', 'danger')
                 return render_template('register.html', form=form)
             else:
-                new_user = User(names=names, username=username, password=password)
+                new_user = User(names=names, email=email, username=username, password=password)
                 db.session.add(new_user)
                 db.session.commit()
                 flash_message('Please log in.', 'success')
                 return redirect(url_for('login'))
         return render_template('register.html', form=form)
-    
+
     #Login Route
     @app.route('/login', methods=['GET', 'POST'])
     def login():
@@ -60,7 +61,7 @@ def register_routes(app):
                 flash_message('Invalid username or password. Please try again.', 'danger')
                 return redirect(url_for('login'))
         return render_template('login.html', form=form)
-    
+
     @app.route('/logout')
     @login_required
     def logout():
@@ -110,7 +111,7 @@ def register_routes(app):
             recent_add=recent_add,
             watch=watch
         )
-    
+
     #Glossary Route
     @app.route('/glossary', methods=['GET', 'POST'])
     def glossary():
@@ -118,7 +119,7 @@ def register_routes(app):
         results = None
         search_performed = False
         all_terms = Glossary.query.all()
-        
+
         if form.validate_on_submit():
             search_performed = True
             search_term = form.search.data.lower()
@@ -130,7 +131,7 @@ def register_routes(app):
                         db.func.lower(Glossary.definition).contains(search_term)
                     )
                 ).all()
-        
+
         return render_template('glossary.html', 
                             form=form, 
                             results=results, 
@@ -164,7 +165,7 @@ def register_routes(app):
             flash_message('Movie was registered.', 'success')
             return redirect(url_for('dashboard'))
         return render_template('add.html', form=form)
-    
+
     #View All Logs
     @app.route('/view_all', methods=['GET', 'POST'])
     @login_required
@@ -176,14 +177,14 @@ def register_routes(app):
             results = Movie.query.filter_by(username=current_user.username).filter(Movie.name.ilike(f"%{search_term}%")).all()
             return render_template('view_all.html', form=form, results=results, movies=movies)
         return render_template('view_all.html', form=form, movies=movies)
-    
+
     #View A Single Movie
     @app.route('/view_movie/<int:id>', methods=['GET'])
     @login_required
     def view_movie(id):
         movie = Movie.query.filter_by(id=id).first()
         return render_template('view_movie.html', movie=movie)
-    
+
     #Delete a movie
     @app.route('/delete/<int:id>', methods=['GET','POST'])
     @login_required
@@ -193,7 +194,7 @@ def register_routes(app):
         db.session.commit()
         flash_message('Movie deleted successfully!', 'success')
         return redirect(url_for('viewMovies'))
-    
+
     #Update a movie
     @app.route('/update/<int:id>', methods=['GET', 'POST'])
     @login_required
@@ -216,50 +217,70 @@ def register_routes(app):
             db.session.commit()
             flash_message('Movie was updated.', 'success')
             return redirect(url_for('viewMovies'))
-        
+
         return render_template('update.html', form=form, movie=movie)
-    
+
     #Search Route
     @app.route('/search', methods=['GET', 'POST'])
     @login_required
     def search():
         form = SearchForm()
+        page = request.args.get('page', 1, type=int)
+        per_page = 10  # Number of results per page
+        search_term = request.args.get('query', '')
+
         if form.validate_on_submit():
             search_term = form.search.data
-            results = get_movie(search_term)
-            return render_template('search.html', form=form, results=results)
+            return redirect(url_for('search', query=search_term, page=1))
+
+        if search_term:
+            # Get results for the current page
+            results, total_results = get_movie(search_term, page)
+
+            # Calculate total pages
+            total_pages = (total_results + per_page - 1) // per_page if total_results > 0 else 0
+
+            return render_template('search.html', 
+                                  form=form, 
+                                  results=results, 
+                                  page=page, 
+                                  total_pages=total_pages, 
+                                  query=search_term)
+
         return render_template('search.html', form=form)
 
-    def get_movie(search_term):
+    def get_movie(search_term, page=1):
         if not search_term:
-            return None
+            return None, 0
 
-        url = "http://www.omdbapi.com/"
+        url = "https://www.omdbapi.com/"
         params = {
             'apikey': OMDB_API_KEY,
-            's': search_term
+            's': search_term,
+            'page': page
         }
         response = requests.get(url, params=params)
-        
+
         if response.status_code == 200:
             data = response.json()
             if data.get('Response') == "True":
-                return data.get('Search', [])
-            return []
+                total_results = int(data.get('totalResults', 0))
+                return data.get('Search', []), total_results
+            return [], 0
         else:
-            return []
-    
+            return [], 0
+
     #Movie Info Route
     @app.route('/movie_info/<string:imdb_id>', methods=['GET'])
     @login_required
     def movie_info(imdb_id):
-        url = "http://www.omdbapi.com/"
+        url = "https://www.omdbapi.com/"
         params = {
             'apikey': OMDB_API_KEY,
             'i': imdb_id
         }
         response = requests.get(url, params=params)
-        
+
         if response.status_code == 200:
             data = response.json()
             if data.get('Response') == "True":
@@ -270,18 +291,18 @@ def register_routes(app):
         else:
             flash_message('Error fetching movie details.', 'danger')
             return redirect(url_for('search'))
-        
+
     #Add from IMDB
     @app.route('/add_from_imdb/<string:imdb_id>', methods=['GET'])
     @login_required
     def add_from_imdb(imdb_id):
-        url = "http://www.omdbapi.com/"
+        url = "https://www.omdbapi.com/"
         params = {
             'apikey': OMDB_API_KEY,
             'i': imdb_id
         }
         response = requests.get(url, params=params)
-        
+
         if response.status_code == 200:
             data = response.json()
             if data.get('Response') == "True":
@@ -309,4 +330,31 @@ def register_routes(app):
         else:
             flash_message('Error fetching movie details.', 'danger')
             return redirect(url_for('search'))
-        
+
+    #View user profile
+    @app.route('/profile', methods=['GET'])
+    @login_required
+    def profile():
+        return render_template('profile.html', user= current_user)
+
+    @app.route('/profile/edit/<string:user_id>', methods=['GET', 'POST'])
+    @login_required
+    def edit_profile(user_id):
+        user = User.query.get_or_404(user_id)
+        form = UpdateForm(obj=user)
+        if request.method == 'POST':
+            user.username = form.username.data
+            user.names = form.names.data
+            db.session.commit()
+            flash_message('Profile updated successfully!', 'success')
+            return redirect(url_for('profile'))
+        return render_template('edit_profile.html', form=form, user=user)
+
+    @app.route('/profile/delete/<string:user_id>', methods=['GET', 'POST'])
+    @login_required
+    def delete_profile(user_id):
+        user = User.query.get_or_404(user_id)
+        db.session.delete(user)
+        db.session.commit()
+        flash_message('Profile deleted.', 'success')
+        return redirect(url_for('logout'))

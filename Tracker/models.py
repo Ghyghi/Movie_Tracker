@@ -6,6 +6,7 @@ class User(db.Model, UserMixin):
     names = db.Column(db.String(255), nullable=False)
     username = db.Column(db.String(100), primary_key=True)
     password = db.Column(db.String(255), nullable=False)
+    email = db.Column(db.String(255), nullable=False, unique=True, default='abc@gmail.com')
 
     movie = db.relationship('Movie', back_populates='user', uselist=False, cascade="all, delete-orphan")
 

@@ -1,0 +1,31 @@
+{% extends 'base-2.html' %}
+
+{% block head %}
+    <title>Profile</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/ex.css') }}">
+{% endblock %}
+
+{% block content %}
+    {% if user %}
+        <section class="movie-details">
+            <h4 class="movie-title">{{ user.username }}</h4>
+            <div class="movie-info">
+                <p><strong>Names:</strong> {{ user.names }}</p>
+                <p><strong>Email:</strong> {{ user.email }}</p>
+            </div>
+            <!-- CRUD Controls -->
+            <div class="movie-actions">
+                <h3>Actions</h3>
+                <!-- Update -->
+                <a href="{{ url_for('edit_profile', user_id=user.username) }}" class="btn btn-primary">Edit Profile</a>
+
+                <!-- Delete -->
+                <a href="{{ url_for('delete_profile', user_id=user.username) }}" class="btn btn-danger">Delete</a>
+            </div>
+
+        </section>
+
+    {% else %}
+        <p>User not found or not logged in.</p>
+    {% endif %}
+{% endblock %}

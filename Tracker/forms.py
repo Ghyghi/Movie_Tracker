@@ -51,6 +51,7 @@ repeats = [
 # Define the form classes
 class RegisterForm(FlaskForm):
     names=StringField("Names", validators=[DataRequired()])
+    email=EmailField("Email", validators=[DataRequired()])
     username=StringField("Username", validators=[DataRequired()])
     password=PasswordField("Password", validators=[InputRequired()])
     submit=SubmitField("Register")
@@ -77,3 +78,8 @@ class AddMovieForm(FlaskForm):
 class SearchForm(FlaskForm):
     search = StringField("Search", validators=[InputRequired()])
     submit = SubmitField("Search")
+
+class UpdateForm(FlaskForm):
+    names = StringField("Enter your name", validators=[DataRequired()])
+    username = StringField("Enter your username", validators=[DataRequired()])
+    submit = SubmitField("Update")

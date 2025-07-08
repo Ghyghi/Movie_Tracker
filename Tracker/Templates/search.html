@@ -16,11 +16,64 @@
     {% if results %}
         <section id="results">
             <h3>Search Results</h3>
-            <ul>
+            <div class="movie-cards">
                 {% for movie in results %}
-                    <li> <a href="{{ url_for('movie_info', imdb_id=movie.imdbID) }}">{{ movie.Title }} ({{ movie.Year }}) </a></li>
+                    <div class="movie-card">
+                        <a href="{{ url_for('movie_info', imdb_id=movie.imdbID) }}">
+                            <div class="poster-container">
+                                {% if movie.Poster and movie.Poster != 'N/A' %}
+                                    <img src="{{ movie.Poster }}" alt="{{ movie.Title }} Poster" class="movie-poster">
+                                {% else %}
+                                    <div class="no-poster">
+                                        <span>{{ movie.Title }}</span>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="movie-info">
+                                <h4 class="movie-title">{{ movie.Title }}</h4>
+                                <p class="movie-year">{{ movie.Year }}</p>
+                            </div>
+                        </a>
+                    </div>
                 {% endfor %}
-            </ul>
+            </div>
+
+            {% if total_pages > 0 %}
+                {% if total_pages > 1 %}
+                <div class="pagination">
+                    <div class="pagination-info">
+                        Page {{ page }} of {{ total_pages }}
+                    </div>
+                    <div class="pagination-controls">
+                        {% if page > 1 %}
+                            {% set prev_page = page - 1 %}
+                            <a href="{{ url_for('search', query=query, page=prev_page) }}" class="pagination-btn prev-btn">&laquo; Previous</a>
+                        {% endif %}
+
+                        {% set start_page = [page - 2, 1]|max %}
+                        {% set end_page = [start_page + 4, total_pages]|min %}
+                        {% set start_page = [end_page - 4, 1]|max %}
+
+                        {% for p in range(start_page, end_page + 1) %}
+                            {% if p == page %}
+                                <span class="pagination-btn page-btn current-page">{{ p }}</span>
+                            {% else %}
+                                <a href="{{ url_for('search', query=query, page=p) }}" class="pagination-btn page-btn">{{ p }}</a>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if page < total_pages %}
+                            {% set next_page = page + 1 %}
+                            <a href="{{ url_for('search', query=query, page=next_page) }}" class="pagination-btn next-btn">Next &raquo;</a>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+            {% else %}
+                {% if query %}
+                <p>No results found for "{{ query }}"</p>
+                {% endif %}
+            {% endif %}
         </section>
     {% else %}
         <section id="results">
